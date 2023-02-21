@@ -65,12 +65,3 @@ CREATE TABLE measurement_log (
   FOREIGN KEY (lifter_id) REFERENCES lifter(lifter_id)
 );
 
-
-
--- CREATE TABLE workout_lifter (
---   workout_id INT NOT NULL,
---   lifter_id INT NOT NULL,
---   PRIMARY KEY (workout_id, lifter_id),
---   FOREIGN KEY (workout_id) REFERENCES workout(workout_id),
---   FOREIGN KEY (lifter_id) REFERENCES lifter(lifter_id)
--- );
