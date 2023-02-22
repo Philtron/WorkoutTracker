@@ -1,8 +1,8 @@
--- DROP DATABASE workout;
+DROP DATABASE workout;
 CREATE DATABASE IF NOT EXISTS workout;
 use workout;
 
-CREATE TABLE exercise (
+CREATE TABLE exercises (
   exercise_id INT PRIMARY KEY AUTO_INCREMENT,
   name VARCHAR(50) NOT NULL,
   primary_muscle_group VARCHAR(50) NOT NULL,
@@ -11,7 +11,7 @@ CREATE TABLE exercise (
   notes TEXT
 );
 
-CREATE TABLE lifter (
+CREATE TABLE lifters (
   lifter_id INT PRIMARY KEY AUTO_INCREMENT,
   name VARCHAR(50) NOT NULL,
   weight DECIMAL(5,2) NOT NULL,
@@ -19,7 +19,7 @@ CREATE TABLE lifter (
   notes TEXT
 );
 
-CREATE TABLE workout (
+CREATE TABLE workouts (
   workout_id INT PRIMARY KEY AUTO_INCREMENT,
   date DATE NOT NULL,
   notes TEXT
@@ -34,9 +34,9 @@ CREATE TABLE exercise_log (
   reps INT NOT NULL,
   sets INT NOT NULL,
   notes TEXT,
-  FOREIGN KEY (workout_id) REFERENCES workout(workout_id),
-  FOREIGN KEY (exercise_id) REFERENCES exercise(exercise_id),
-  FOREIGN KEY (lifter_id) REFERENCES lifter(lifter_id)
+  FOREIGN KEY (workout_id) REFERENCES workouts(workout_id),
+  FOREIGN KEY (exercise_id) REFERENCES exercises(exercise_id),
+  FOREIGN KEY (lifter_id) REFERENCES lifters(lifter_id)
 );
 
 
@@ -46,7 +46,7 @@ CREATE TABLE bodyweight_log (
   weight DECIMAL(5,2) NOT NULL,
   date DATE NOT NULL,
   notes TEXT,
-  FOREIGN KEY (lifter_id) REFERENCES lifter(lifter_id)
+  FOREIGN KEY (lifter_id) REFERENCES lifters(lifter_id)
 );
 
 
@@ -62,6 +62,15 @@ CREATE TABLE measurement_log (
   stomach DECIMAL(5,2) NOT NULL,
   notes TEXT,
   date DATE NOT NULL,
-  FOREIGN KEY (lifter_id) REFERENCES lifter(lifter_id)
+  FOREIGN KEY (lifter_id) REFERENCES lifters(lifter_id)
 );
 
+
+
+-- CREATE TABLE workout_lifter (
+--   workout_id INT NOT NULL,
+--   lifter_id INT NOT NULL,
+--   PRIMARY KEY (workout_id, lifter_id),
+--   FOREIGN KEY (workout_id) REFERENCES workout(workout_id),
+--   FOREIGN KEY (lifter_id) REFERENCES lifter(lifter_id)
+-- );

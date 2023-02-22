@@ -11,8 +11,8 @@ def display_menu():
     5. List workouts.
     6. Exit.
     Enter your selection: '''
-    user_input = int(input(message))
-    return user_input
+    u_input = int(input(message))
+    return u_input
 
 
 if __name__ == '__main__':

@@ -1,4 +1,4 @@
-INSERT INTO exercise (name, primary_muscle_group, secondary_muscle_group, push_or_pull)
+INSERT INTO exercises (name, primary_muscle_group, secondary_muscle_group, push_or_pull)
 VALUES
 ('Bench_BB_Decline', 'Chest', 'Triceps', 'push'),
 ('Bench_DB_Decline', 'Chest', 'Triceps', 'push'),
@@ -39,4 +39,4 @@ VALUES
 ('Curl_Reverse', 'Biceps', 'Forearm', 'pull'),
 ('Step_Ups', 'Legs', 'Quads', 'push');
 
-SELECT * FROM exercise;
+SELECT * FROM exercises;
