@@ -1,7 +1,7 @@
 from database_functions import connect_to_database, get_exercises, get_lifters, get_workouts, add_workout, add_exercise
 
 
-# Display options to user and return their selection
+# Display options to user and return their selection.
 def display_menu():
     message = '''What would you like to do?
     1. Enter new workout.
@@ -14,6 +14,10 @@ def display_menu():
     u_input = int(input(message))
     return u_input
 
+
+# from front_end import WorkoutApp
+# from tkinter import *
+from tkinter import ttk
 
 if __name__ == '__main__':
     # Connect to the database and get a cursor object

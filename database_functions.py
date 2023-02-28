@@ -3,10 +3,10 @@ import mysql.connector
 
 # Function to connect to the database, takes no arguments
 # Prompts the user for their database credentials and connects to the workout database
-def connect_to_database():
-    # Prompt user for database username and password
-    username = input("Enter your username: ")
-    password = input("Enter your password: ")
+def connect_to_database(username, password):
+    # Prompt user for database username and password.
+    # username = input("Enter your username: ")
+    # password = input("Enter your password: ")
     try:
         # Attempt to connect with credentials
         my_db = mysql.connector.connect(user=username, password=password, host='localhost', database='workout')
@@ -36,11 +36,12 @@ def get_exercises(my_cursor):
 # Executes an SQL query to select all rows from the lifters table and prints them to the console
 def get_lifters(my_cursor):
     my_cursor.execute("SELECT * FROM lifters")
-    lifters = my_cursor.fetchall()
-    print("Lifters List")
-    for lifter in lifters:
-        print(f"Name: {lifter[1]} Lifter ID: {lifter[0]}")
-    print()
+    return my_cursor.fetchall()
+    # lifters = my_cursor.fetchall()
+    # print("Lifters List")
+    # for lifter in lifters:
+    #     print(f"Name: {lifter[1]} Lifter ID: {lifter[0]}")
+    # print()
 
 
 # Get all workouts from the workouts table, takes a cursor as an argument
