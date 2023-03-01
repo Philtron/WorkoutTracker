@@ -50,15 +50,16 @@ def get_lifters(my_cursor):
 # Also prompts the user to select a workout by ID and calls the get_exercise_from_workout_id function
 def get_workouts(my_cursor):
     my_cursor.execute("SELECT * FROM workouts")
-    workouts = my_cursor.fetchall()
-    print("Workouts list")
-    for workout in workouts:
-        print(workout)
-    print()
-    workout_selection = input("Enter a workout id to view attached exercise logs or enter 0 to continue: ")
-    while workout_selection != '0':
-        get_exercise_from_workout_id(my_cursor, workout_selection)
-        workout_selection = input("Enter a workout id to view attached exercise logs or enter 0 to continue: ")
+    return my_cursor.fetchall()
+    # workouts = my_cursor.fetchall()
+    # print("Workouts list")
+    # for workout in workouts:
+    #     print(workout)
+    # print()
+    # workout_selection = input("Enter a workout id to view attached exercise logs or enter 0 to continue: ")
+    # while workout_selection != '0':
+    #     get_exercise_from_workout_id(my_cursor, workout_selection)
+    #     workout_selection = input("Enter a workout id to view attached exercise logs or enter 0 to continue: ")
 
 
 # Get all exercise logs attached to a specific workout, takes a cursor and a workout ID as arguments
@@ -80,16 +81,17 @@ def get_exercise_from_workout_id(my_cursor, workout_id):
             print(log)
     else:
         print(f"No exercise logs found for workout {workout_id}")
+    return logs
 
 
 # Add a new workout to the workouts table, takes a cursor as an argument
 # Prompts the user for a date and notes, then inserts the new workout into the workouts table
 # Returns True if the workout was successfully added, False otherwise
-def add_workout(my_cursor):
+def add_workout(my_cursor, date, notes):
     try:
 
-        date = input("Enter date (YYYY-MM-DD): ")
-        notes = input("Enter notes: ")
+        # date = input("Enter date (YYYY-MM-DD): ")
+        # notes = input("Enter notes: ")
         sql = "INSERT INTO workouts(date, notes) VALUES(%s, %s)"
         val = (date, notes)
         query = sql % val
@@ -143,3 +145,8 @@ def add_exercise(my_cursor, workout_id):
             keep_going = True
 
     return exercise_updated
+
+
+def commit_changes(connection):
+    connection.commit()
+    print("Changes Committed!")
