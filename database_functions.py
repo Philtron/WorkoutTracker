@@ -22,14 +22,15 @@ def connect_to_database(username, password):
 # Executes an SQL query to select all rows from the exercises table and prints them to the console
 def get_exercises(my_cursor):
     my_cursor.execute("SELECT * FROM exercises")
-    exercises = my_cursor.fetchall()
-
-    print("Exercises List:")
-    for i, exercise in enumerate(exercises):
-        print(f"Exercise ID:{exercise[0]}: {exercise[1]} ", end="")
-        if (i + 1) % 4 == 0:
-            print()
-    print()
+    return my_cursor.fetchall()
+    # exercises = my_cursor.fetchall()
+    #
+    # print("Exercises List:")
+    # for i, exercise in enumerate(exercises):
+    #     print(f"Exercise ID:{exercise[0]}: {exercise[1]} ", end="")
+    #     if (i + 1) % 4 == 0:
+    #         print()
+    # print()
 
 
 # Get all lifters from the lifters table, takes a cursor as an argument

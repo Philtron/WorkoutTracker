@@ -1,6 +1,5 @@
 import tkinter as tk
 from tkinter import messagebox
-
 import database_functions
 
 
@@ -11,29 +10,48 @@ class MainWindow(tk.Tk):
         self.mydb = db_connection
 
         self.title("Workout App")
-        self.geometry("500x500")
+        self.geometry("250x400")
 
         menu_frame = tk.Frame(self)
         menu_frame.pack(padx=10, pady=10, fill="both", expand=True)
 
         # Create buttons for each menu option
-        add_workout_button = tk.Button(menu_frame, text="Enter new workout", command=self.add_workout)
+        self.add_workout_image = tk.PhotoImage(file='add_workout.PNG')
+        add_workout_button = tk.Button(menu_frame, image=self.add_workout_image, text="Enter New Workout", fg='white',
+                                       font=("TkDefaultFont", 18),compound='center', command=self.add_workout)
         add_workout_button.pack(fill="both", expand=True)
 
-        add_exercise_button = tk.Button(menu_frame, text="Enter new exercise", command=self.add_exercise)
+        self.add_exercise_image = tk.PhotoImage(file='add_exercise.PNG')
+        add_exercise_button = tk.Button(menu_frame, image=self.add_exercise_image,  text="Enter New Exercise",
+                                        font=("TkDefaultFont", 18), fg='white', compound='center',
+                                        command=self.add_exercise)
         add_exercise_button.pack(fill="both", expand=True)
 
-        list_lifters_button = tk.Button(menu_frame, text="List lifters", command=self.list_lifters)
+        self.list_lifters_image = tk.PhotoImage(file='list_lifters.PNG')
+        list_lifters_button = tk.Button(menu_frame, image=self.list_lifters_image,  text="List Lifters", fg='white',
+                                        font=("TkDefaultFont", 18), compound='center', command=self.list_lifters)
         list_lifters_button.pack(fill="both", expand=True)
 
-        list_exercises_button = tk.Button(menu_frame, text="List exercises", command=self.list_exercises)
+        self.list_exercises_image = tk.PhotoImage(file='list_exercises.PNG')
+        list_exercises_button = tk.Button(menu_frame,image=self.list_exercises_image, text="List Exercises", fg='white',
+                                          font=("TkDefaultFont", 18), compound='center', command=self.list_exercises)
         list_exercises_button.pack(fill="both", expand=True)
 
-        list_workouts_button = tk.Button(menu_frame, text="List workouts", command=self.list_workouts)
+        self.list_workouts_image = tk.PhotoImage(file="list_workouts.PNG")
+        list_workouts_button = tk.Button(menu_frame, image=self.list_workouts_image,  text="List Workouts", fg='white',
+                                         font=("TkDefaultFont", 18), compound='center', command=self.list_workouts)
         list_workouts_button.pack(fill="both", expand=True)
 
-        exit_button = tk.Button(menu_frame, text="Exit", command=self.quit)
+        self.exit_image = tk.PhotoImage(file='exit.PNG')
+        exit_button = tk.Button(menu_frame, image=self.exit_image,  text="Exit", fg='white', font=("TkDefaultFont", 18),
+                                compound='center', command=self.quit)
         exit_button.pack(fill="both", expand=True)
+
+        # self.my_image = tk.PhotoImage(file='button.png')
+        # image_button = tk.Button(menu_frame, image=self.my_image, text="Test", fg='white', font=("TkDefaultFont", 18),
+        #                          command=self.clicked, compound='center', padx=10, pady=10)
+        # image_button.pack(fill='both', expand=True)
+
 
     def add_workout(self):
         messagebox.showinfo("Add Workout")
@@ -57,15 +75,27 @@ class MainWindow(tk.Tk):
         lifter_window.geometry("200x200")
 
         lifter_listbox = tk.Listbox(lifter_window)
-        lifter_listbox.pack(fill="both", expand=True)
+        lifter_listbox.pack(padx=10, pady=10, fill="both", expand=True)
 
         for lifter in lifters:
             lifter_listbox.insert("end", f"{lifter[1]}, (ID: {lifter[0]})")
 
     def list_exercises(self):
-        messagebox.showinfo("List Exercises")
+        # messagebox.showinfo("List Exercises")
+        my_cursor = self.mydb.cursor()
+        exercises = database_functions.get_exercises(my_cursor)
 
-        database_functions.get_exercises(self.mydb.cursor())
+        exercises_window = tk.Toplevel(self)
+        exercises_window.title("Exercise List")
+        exercises_window.geometry("400x400")
+
+        exercise_listbox = tk.Listbox(exercises_window)
+        exercise_listbox.pack(padx=10, pady=10, fill='both', expand=True)
+
+        for exercise in exercises:
+            exercise_listbox.insert("end", f"{exercise[1]}, (ID: {exercise[0]})")
+
+
 
     def list_workouts(self):
         messagebox.showinfo("List Workouts")
