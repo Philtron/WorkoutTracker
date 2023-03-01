@@ -16,33 +16,33 @@ class MainWindow(tk.Tk):
         menu_frame.pack(padx=10, pady=10, fill="both", expand=True)
 
         # Create buttons for each menu option
-        self.add_workout_image = tk.PhotoImage(file='add_workout.PNG')
+        self.add_workout_image = tk.PhotoImage(file='Images/add_workout.PNG')
         add_workout_button = tk.Button(menu_frame, image=self.add_workout_image, text="Enter New Workout", fg='white',
                                        font=("TkDefaultFont", 18),compound='center', command=self.add_workout)
         add_workout_button.pack(fill="both", expand=True)
 
-        self.add_exercise_image = tk.PhotoImage(file='add_exercise.PNG')
+        self.add_exercise_image = tk.PhotoImage(file='Images/add_exercise.PNG')
         add_exercise_button = tk.Button(menu_frame, image=self.add_exercise_image,  text="Enter New Exercise",
                                         font=("TkDefaultFont", 18), fg='white', compound='center',
                                         command=self.add_exercise)
         add_exercise_button.pack(fill="both", expand=True)
 
-        self.list_lifters_image = tk.PhotoImage(file='list_lifters.PNG')
+        self.list_lifters_image = tk.PhotoImage(file='Images/list_lifters.PNG')
         list_lifters_button = tk.Button(menu_frame, image=self.list_lifters_image,  text="List Lifters", fg='white',
                                         font=("TkDefaultFont", 18), compound='center', command=self.list_lifters)
         list_lifters_button.pack(fill="both", expand=True)
 
-        self.list_exercises_image = tk.PhotoImage(file='list_exercises.PNG')
+        self.list_exercises_image = tk.PhotoImage(file='Images/list_exercises.PNG')
         list_exercises_button = tk.Button(menu_frame,image=self.list_exercises_image, text="List Exercises", fg='white',
                                           font=("TkDefaultFont", 18), compound='center', command=self.list_exercises)
         list_exercises_button.pack(fill="both", expand=True)
 
-        self.list_workouts_image = tk.PhotoImage(file="list_workouts.PNG")
+        self.list_workouts_image = tk.PhotoImage(file="Images/list_workouts.PNG")
         list_workouts_button = tk.Button(menu_frame, image=self.list_workouts_image,  text="List Workouts", fg='white',
                                          font=("TkDefaultFont", 18), compound='center', command=self.list_workouts)
         list_workouts_button.pack(fill="both", expand=True)
 
-        self.exit_image = tk.PhotoImage(file='exit.PNG')
+        self.exit_image = tk.PhotoImage(file='Images/exit.PNG')
         exit_button = tk.Button(menu_frame, image=self.exit_image,  text="Exit", fg='white', font=("TkDefaultFont", 18),
                                 compound='center', command=self.quit)
         exit_button.pack(fill="both", expand=True)
