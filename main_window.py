@@ -1,16 +1,13 @@
 import sys
 import tkinter as tk
-from tkinter import messagebox
-
-import add_exercise
+import add_exercise_log
 import add_workout
 import database_functions
 
 
+# Grabs selected item from listbox
 def get_selected_item(listbox):
-    # Get the index of the selected item
     selection = listbox.curselection()
-    # If an item is selected, retrieve its value
     if selection:
         return selection[0]
     else:
@@ -21,15 +18,18 @@ class MainWindow(tk.Tk):
     def __init__(self, db_connection):
         super().__init__()
 
+        # Initialize instance variables
         self.mydb = db_connection
 
+        # Set title and dimensions
         self.title("Workout App")
         self.geometry("250x400")
 
+        # Create menu frame to hold buttons
         menu_frame = tk.Frame(self)
         menu_frame.pack(padx=10, pady=10, fill="both", expand=True)
 
-        # Create buttons for each menu option
+        # Create buttons for each menu item. Add images to each button Tkinter is ugly without makeup
         self.add_workout_image = tk.PhotoImage(file='Images/add_workout.PNG')
         self.add_workout_button = tk.Button(menu_frame, image=self.add_workout_image, text="Enter New Workout",
                                             fg='white',
@@ -71,18 +71,20 @@ class MainWindow(tk.Tk):
                                      compound='center', command=lambda: sys.exit(0))
         self.exit_button.pack(fill="both", expand=True)
 
+    # Hide self and create and display add_workout window
     def add_workout(self):
         self.withdraw()
         add_workout_window = add_workout.AddWorkout(self.mydb, master=self)
         add_workout_window.mainloop()
 
+    # Hide self and create and display add_exercise window
     def add_exercise(self):
         self.withdraw()
-        add_exercise_window = add_exercise.AddExercise(self.mydb, master=self)
+        add_exercise_window = add_exercise_log.AddExercise(self.mydb, master=self)
         add_exercise_window.mainloop()
 
+    # Called by list lifters button. Queries the database and displays results in a listbox in a pop out window
     def list_lifters(self):
-        # messagebox.showinfo("List Lifters")
         my_cursor = self.mydb.cursor()
         lifters = database_functions.get_lifters(my_cursor)
 
@@ -96,8 +98,8 @@ class MainWindow(tk.Tk):
         for lifter in lifters:
             lifter_listbox.insert("end", f"{lifter[1]}, (ID: {lifter[0]})")
 
+    # Called by list exercises button. Queries the database and displays results in a listbox in a pop out window
     def list_exercises(self):
-        # messagebox.showinfo("List Exercises")
         my_cursor = self.mydb.cursor()
         exercises = database_functions.get_exercises(my_cursor)
 
@@ -111,6 +113,8 @@ class MainWindow(tk.Tk):
         for exercise in exercises:
             exercise_listbox.insert("end", f"{exercise[1]}, (ID: {exercise[0]})")
 
+    # Called by list workouts button. Queries the database and displays results in a listbox in a pop out window using
+    # the add_to_exercise_listbox() method.
     def list_workouts(self):
         my_cursor = self.mydb.cursor()
         workouts = database_functions.get_workouts(my_cursor)
@@ -119,7 +123,6 @@ class MainWindow(tk.Tk):
         workouts_window.title("Workouts")
         workouts_window.geometry("450x600")
 
-        # Create a frame to hold the listboxes
         listbox_frame = tk.Frame(workouts_window)
         listbox_frame.pack(fill="both", expand=True, padx=10, pady=10)
 
@@ -138,6 +141,8 @@ class MainWindow(tk.Tk):
         header = "Exercise Log ID | Workout ID | Exercise | Lifter | Weight | Reps | Set # | Notes"
         exercise_listbox.insert("end", header)
 
+    # Function to populate exercise listbox. Clears the listbox before grabbing the selected item using the
+    # get_selected_item() function
     def add_to_exercise_listbox(self, workouts_listbox, exercise_listbox):
         exercise_listbox.delete(2, tk.END)
         index = get_selected_item(workouts_listbox)
