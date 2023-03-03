@@ -23,7 +23,7 @@ class MainWindow(tk.Tk):
 
         # Set title and dimensions
         self.title("Workout App")
-        self.geometry("250x400")
+        self.geometry("250x600")
 
         # Create menu frame to hold buttons
         menu_frame = tk.Frame(self)
@@ -70,6 +70,9 @@ class MainWindow(tk.Tk):
                                      font=("TkDefaultFont", 18),
                                      compound='center', command=lambda: sys.exit(0))
         self.exit_button.pack(fill="both", expand=True)
+
+        self.pretty_workout_button = tk.Button(self, text="Pretty Workouts", command=lambda: self.pretty_workouts())
+        self.pretty_workout_button.pack(fill="both", expand=True)
 
     # Hide self and create and display add_workout window
     def add_workout(self):
@@ -138,17 +141,75 @@ class MainWindow(tk.Tk):
 
         exercise_listbox = tk.Listbox(workouts_window)
         exercise_listbox.pack(padx=10, pady=10, fill='both', expand=True)
-        header = "Exercise Log ID | Workout ID | Exercise | Lifter | Weight | Reps | Set # | Notes"
-        exercise_listbox.insert("end", header)
 
     # Function to populate exercise listbox. Clears the listbox before grabbing the selected item using the
     # get_selected_item() function
     def add_to_exercise_listbox(self, workouts_listbox, exercise_listbox):
-        exercise_listbox.delete(2, tk.END)
+        exercise_listbox.delete(1, tk.END)
         index = get_selected_item(workouts_listbox)
         if index is not None:
             value = workouts_listbox.get(index)
             workout_id = int(value.split()[0])
             logs = database_functions.get_exercise_from_workout_id(self.mydb.cursor(), workout_id)
             for log in logs:
-                exercise_listbox.insert("end", log)
+                # insert_string = f"EXERCISE ID: {log[0]} WORKOUT ID: {log[1]} EXERCISE: {log[2]} " \
+                #                 f"LIFTER: {log[3]} WEIGHT: {log[4]} REPS: {log[5]} SET #: {log[6]} NOTES: {log[7]}"
+                insert_string = string = "EXERCISE ID: {:<10} WORKOUT ID: {:<10} EXERCISE: {:<30} LIFTER: {:<20} " \
+                                         "WEIGHT: {:<10} REPS: {:<10} SET #: {:<10} NOTES: {}"
+                formatted_string = insert_string.format(log[0], log[1], log[2], log[3], log[4], log[5], log[6], log[7])
+                exercise_listbox.insert("end", formatted_string)
+
+    def pretty_workouts(self):
+        pretty_workouts_window = tk.Toplevel(self)
+        pretty_workouts_window.title("Pretty Workouts")
+        pretty_workouts_window.geometry("500x500")
+
+        id_label = tk.Label(pretty_workouts_window, text="ID")
+        id_entry = tk.Entry(pretty_workouts_window)
+        pretty_listbox = tk.Listbox(pretty_workouts_window)
+        get_id_button = tk.Button(pretty_workouts_window, text="Get Workout",
+                                  command=lambda: self.get_pretty(id_entry.get(), pretty_listbox))
+        id_label.pack()
+        id_entry.pack()
+        get_id_button.pack()
+
+        pretty_listbox.pack(fill="both", expand=True, padx=10, pady=10)
+
+    def get_pretty(self, workout_id, list_box):
+        my_cursor = self.mydb.cursor()
+        # Retrieve the exercise logs for the selected workout
+        exercise_logs = database_functions.pretty_workout(my_cursor, workout_id)
+        # Group the exercise logs by lifter name and exercise name
+        lifter_groups = {}
+        for log in exercise_logs:
+            lifter_name = log[0]
+            exercise_name = log[1]
+            weight = log[2]
+            reps = log[3]
+            sets = log[4]
+
+            if lifter_name not in lifter_groups:
+                lifter_groups[lifter_name] = {}
+
+            if exercise_name not in lifter_groups[lifter_name]:
+                lifter_groups[lifter_name][exercise_name] = []
+
+            lifter_groups[lifter_name][exercise_name].append((weight, reps, sets))
+
+        # Build the output string
+        output_string = ""
+        for lifter_name, exercise_groups in lifter_groups.items():
+            output_string += lifter_name + "\n"
+            for exercise_name, exercise_logs in exercise_groups.items():
+                output_string += exercise_name + ", "
+                for exercise_log in exercise_logs:
+                    weight = exercise_log[0]
+                    reps = exercise_log[1]
+                    sets = exercise_log[2]
+                    output_string += f"{weight}, set {sets} rep {reps}, "
+                output_string = output_string[:-2] + "\n"
+        print(output_string)
+        list_box.delete(1, tk.END)
+        rows = output_string.split("\n")
+        for row in rows:
+            list_box.insert("end", row)

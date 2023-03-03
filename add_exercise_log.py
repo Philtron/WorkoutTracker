@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import messagebox
+from tkinter import messagebox, ttk
 
 import database_functions
 
@@ -7,6 +7,14 @@ import database_functions
 def get_id(id_string):
     split_list = id_string.split(", ")
     return int(split_list[0][1:])
+
+
+def get_item_id(combo_box, item_list):
+    selected_name = combo_box.get()
+    for item in item_list:
+        if item[1] == selected_name:
+            selected_id = item[0]
+            return selected_id
 
 
 class AddExercise(tk.Toplevel):
@@ -40,17 +48,17 @@ class AddExercise(tk.Toplevel):
         self.exercise_options.set("")
         self.exercise_option_menu = tk.OptionMenu(self.grid_frame, self.exercise_options, *self.get_exercises())
 
-        # Create OptionMenu and label to allow user to select from list of existing lifters
+        # Create scrollable combobox and label to allow user to select from list of existing lifters
         self.lifter_label = tk.Label(self.grid_frame, text="Lifters")
-        self.lifter_options = tk.StringVar(self.grid_frame)
-        self.lifter_options.set("")
-        self.lifter_option_menu = tk.OptionMenu(self.grid_frame, self.lifter_options, *self.get_lifters())
+        self.lifter_combo = ttk.Combobox(self.grid_frame)
+        self.lifter_combo["values"] = [lifter[1] for lifter in self.get_lifters()]
+        self.lifter_combo["state"] = "readonly"
 
         # Create labels and entries for user to enter values for the log
-        self.weight_label = tk.Label(self.grid_frame, text="Weight")
-        self.weight_entry = tk.Entry(self.grid_frame)
         self.set_num_label = tk.Label(self.grid_frame, text="Set Number: ")
         self.set_num_entry = tk.Entry(self.grid_frame)
+        self.weight_label = tk.Label(self.grid_frame, text="Weight")
+        self.weight_entry = tk.Entry(self.grid_frame)
         self.reps_label = tk.Label(self.grid_frame, text="Number of Reps: ")
         self.reps_entry = tk.Entry(self.grid_frame)
         self.notes_label = tk.Label(self.grid_frame, text="Notes: ")
@@ -63,12 +71,15 @@ class AddExercise(tk.Toplevel):
         # Place all created widgets
         self.workout_label.grid(row=0, column=0, sticky=tk.W, padx=5, pady=5)
         self.workout_option_menu.grid(row=0, column=1, sticky=tk.W + tk.E, padx=5, pady=5)
+        # self.workout_combo.grid(row=0, column=1, sticky=tk.W + tk.E, padx=5, pady=5)
 
-        self.lifter_label.grid(row=1, column=0, sticky=tk.W, padx=5, pady=5)
-        self.lifter_option_menu.grid(row=1, column=1, sticky=tk.W + tk.E, padx=5, pady=5)
+        self.exercise_label.grid(row=1, column=0, sticky=tk.W, padx=5, pady=5)
+        self.exercise_option_menu.grid(row=1, column=1, sticky=tk.W + tk.E, padx=5, pady=5)
+        # self.exercise_combo.grid(row=2, column=1, sticky=tk.W + tk.E, padx=5, pady=5)
 
-        self.exercise_label.grid(row=2, column=0, sticky=tk.W, padx=5, pady=5)
-        self.exercise_option_menu.grid(row=2, column=1, sticky=tk.W + tk.E, padx=5, pady=5)
+        self.lifter_label.grid(row=2, column=0, sticky=tk.W, padx=5, pady=5)
+        # self.lifter_option_menu.grid(row=1, column=1, sticky=tk.W + tk.E, padx=5, pady=5)
+        self.lifter_combo.grid(row=2, column=1, sticky=tk.W + tk.E, padx=5, pady=5)
 
         self.set_num_label.grid(row=3, column=0, sticky=tk.W, padx=5, pady=5)
         self.set_num_entry.grid(row=3, column=1, sticky=tk.W + tk.E, padx=5, pady=5)
@@ -105,7 +116,7 @@ class AddExercise(tk.Toplevel):
                           exercises]  # Extract the exercise names from the tuples
         return exercise_names
 
-    # Query the database for all lifters and returns a list if tuples with the ids and names of each lifter
+    # Query the database for all lifters and returns a list of tuples with the ids and names of each lifter
     def get_lifters(self):
         # Get the list of exercises from the database
         lifters = database_functions.get_lifters(self.my_cursor)
@@ -122,15 +133,21 @@ class AddExercise(tk.Toplevel):
     # Checks if all fields and drops downs have a value using the validate_inputs() method, then attempts to use
     # those values to insert a new exercise log entry into the database.
     def add_set(self):
+
         if self.validate_inputs():
-            selected_workout = self.workout_options.get()
-            workout_id = get_id(selected_workout)
+            workout_id = get_id(self.workout_options.get())
+            # workout_id = self.get_item_id(self.workout_combo, self.get_workouts())
+            print(f"Workout ID: {workout_id}")
 
-            selected_lifter = self.lifter_options.get()
-            lifter_id = get_id(selected_lifter)
+            # selected_lifter = self.lifter_options.get()
+            # lifter_id = get_id(selected_lifter)
+            # lifter_id = self.get_lifter_id()
+            lifter_id = get_item_id(self.lifter_combo, self.get_lifters())
+            print(f"Lifter ID: {lifter_id}")
 
-            selected_exercise = self.exercise_options.get()
-            exercise_id = get_id(selected_exercise)
+            exercise_id = get_id(self.exercise_options.get())
+            # exercise_id = get_item_id(self.exercise_combo, self.get_exercises())
+            print(f"Exercise ID: {exercise_id}")
 
             set_number = self.set_num_entry.get()
             weight = self.weight_entry.get()
@@ -150,7 +167,7 @@ class AddExercise(tk.Toplevel):
         Returns True if all inputs are valid, False otherwise.
         """
         # Check that all necessary MenuOptions have a value selected
-        if not self.exercise_options.get() or not self.lifter_options.get() or not self.workout_options.get():
+        if not self.exercise_options.get() or not self.lifter_combo.get() or not self.workout_options.get():
             messagebox.showerror("Error", "Please select an option for all dropdown menus.")
             return False
 

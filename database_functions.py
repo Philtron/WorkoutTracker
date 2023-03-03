@@ -6,7 +6,6 @@ import mysql.connector
 # Function to connect to the database, takes no arguments
 # Prompts the user for their database credentials and connects to the workout database
 def connect_to_database(username, password):
-
     try:
         # Attempt to connect with credentials
         my_db = mysql.connector.connect(user=username, password=password, host='localhost', database='workout')
@@ -41,6 +40,14 @@ def get_workouts(my_cursor):
     return my_cursor.fetchall()
 
 
+def pretty_workout(my_cursor, workout_id):
+    my_cursor.execute(f"SELECT l.name AS lifter_name, e.name AS exercise_name,el.weight, el.reps, el.sets "
+                      f"FROM exercise_log AS el JOIN exercises AS e ON el.exercise_id = e.exercise_id "
+                      f"JOIN lifters AS l ON el.lifter_id = l.lifter_id WHERE el.workout_id = {workout_id}"
+                      f" ORDER BY el.elog_id ASC;")
+    return my_cursor.fetchall()
+
+
 # Get all exercise logs attached to a specific workout, takes a cursor and a workout ID as arguments
 # Executes an SQL query to select all exercise logs from the exercise_log table that match the given workout ID
 # Prints the exercise logs to the console then returns the logs
@@ -52,14 +59,14 @@ def get_exercise_from_workout_id(my_cursor, workout_id):
     logs = my_cursor.fetchall()
 
     # If any logs were found, print them with a header
-    if len(logs) > 0:
-        header = "Exercise Log ID | Workout ID | Exercise | Lifter | Weight | Reps | Sets | Notes"
-        print(f"Exercise logs for workout {workout_id}:")
-        print(header)
-        for log in logs:
-            print(log)
-    else:
-        print(f"No exercise logs found for workout {workout_id}")
+    # if len(logs) > 0:
+    #     header = "Exercise Log ID | Workout ID | Exercise | Lifter | Weight | Reps | Sets | Notes"
+    #     print(f"Exercise logs for workout {workout_id}:")
+    #     print(header)
+    #     for log in logs:
+    #         print(log)
+    # else:
+    #     print(f"No exercise logs found for workout {workout_id}")
     return logs
 
 
@@ -108,7 +115,6 @@ def add_exercise(my_cursor, workout_id, exercise_id, lifter_id, weight, reps, se
 def commit_changes(connection):
     try:
         connection.commit()
-        messagebox.showinfo("Confirmation", "Changes have been commited.")
-    except (mysql.connector.Error, mysql.connector.errors.InterfaceError  )as error:
+        messagebox.showinfo("Confirmation", "Changes have been committed.")
+    except (mysql.connector.Error, mysql.connector.errors.InterfaceError) as error:
         messagebox.showerror("Error:", f"{error}")
-
