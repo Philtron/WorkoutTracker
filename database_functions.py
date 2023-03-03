@@ -55,7 +55,8 @@ def get_exercise_from_workout_id(my_cursor, workout_id):
     my_cursor.execute(f"SELECT exercise_log.elog_id, exercise_log.workout_id, exercises.name, lifters.name, "
                       f"exercise_log.weight, exercise_log.reps, exercise_log.sets, exercise_log.notes FROM "
                       f"exercise_log INNER JOIN exercises ON exercise_log.exercise_id = exercises.exercise_id INNER "
-                      f"JOIN lifters ON exercise_log.lifter_id = lifters.lifter_id WHERE workout_id = {workout_id}")
+                      f"JOIN lifters ON exercise_log.lifter_id = lifters.lifter_id WHERE workout_id = {workout_id} "
+                      f"ORDER BY elog_id ASC")
     logs = my_cursor.fetchall()
 
     # If any logs were found, print them with a header

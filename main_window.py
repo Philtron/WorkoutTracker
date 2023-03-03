@@ -124,7 +124,7 @@ class MainWindow(tk.Tk):
 
         workouts_window = tk.Toplevel(self)
         workouts_window.title("Workouts")
-        workouts_window.geometry("450x600")
+        workouts_window.geometry("1000x500")
 
         listbox_frame = tk.Frame(workouts_window)
         listbox_frame.pack(fill="both", expand=True, padx=10, pady=10)
@@ -145,37 +145,49 @@ class MainWindow(tk.Tk):
     # Function to populate exercise listbox. Clears the listbox before grabbing the selected item using the
     # get_selected_item() function
     def add_to_exercise_listbox(self, workouts_listbox, exercise_listbox):
-        exercise_listbox.delete(1, tk.END)
+        exercise_listbox.delete(0, tk.END)
         index = get_selected_item(workouts_listbox)
         if index is not None:
             value = workouts_listbox.get(index)
             workout_id = int(value.split()[0])
             logs = database_functions.get_exercise_from_workout_id(self.mydb.cursor(), workout_id)
             for log in logs:
-                # insert_string = f"EXERCISE ID: {log[0]} WORKOUT ID: {log[1]} EXERCISE: {log[2]} " \
-                #                 f"LIFTER: {log[3]} WEIGHT: {log[4]} REPS: {log[5]} SET #: {log[6]} NOTES: {log[7]}"
+
                 insert_string = string = "EXERCISE ID: {:<10} WORKOUT ID: {:<10} EXERCISE: {:<30} LIFTER: {:<20} " \
                                          "WEIGHT: {:<10} REPS: {:<10} SET #: {:<10} NOTES: {}"
                 formatted_string = insert_string.format(log[0], log[1], log[2], log[3], log[4], log[5], log[6], log[7])
                 exercise_listbox.insert("end", formatted_string)
 
     def pretty_workouts(self):
+        my_cursor = self.mydb.cursor()
+        workouts = database_functions.get_workouts(my_cursor)
+
         pretty_workouts_window = tk.Toplevel(self)
         pretty_workouts_window.title("Pretty Workouts")
         pretty_workouts_window.geometry("500x500")
 
-        id_label = tk.Label(pretty_workouts_window, text="ID")
-        id_entry = tk.Entry(pretty_workouts_window)
+        workout_listbox = tk.Listbox(pretty_workouts_window)
+        workout_listbox.pack(padx=10, pady=10, fill='both', expand=True)
+        for workout in workouts:
+            workout_listbox.insert("end", f"{workout[0]} | Date: {workout[1]} Notes: {workout[2]}")
+
+
+        # id_label = tk.Label(pretty_workouts_window, text="ID")
+        # id_entry = tk.Entry(pretty_workouts_window)
         pretty_listbox = tk.Listbox(pretty_workouts_window)
         get_id_button = tk.Button(pretty_workouts_window, text="Get Workout",
-                                  command=lambda: self.get_pretty(id_entry.get(), pretty_listbox))
-        id_label.pack()
-        id_entry.pack()
+                                  command=lambda: self.get_pretty(workout_listbox, pretty_listbox))
+        # id_label.pack()
+        # id_entry.pack()
         get_id_button.pack()
 
         pretty_listbox.pack(fill="both", expand=True, padx=10, pady=10)
 
-    def get_pretty(self, workout_id, list_box):
+    def get_pretty(self, workout_listbox, list_box):
+        index = get_selected_item(workout_listbox)
+        value = workout_listbox.get(index)
+        workout_id = int(value.split()[0])
+
         my_cursor = self.mydb.cursor()
         # Retrieve the exercise logs for the selected workout
         exercise_logs = database_functions.pretty_workout(my_cursor, workout_id)
@@ -209,7 +221,7 @@ class MainWindow(tk.Tk):
                     output_string += f"{weight}, set {sets} rep {reps}, "
                 output_string = output_string[:-2] + "\n"
         print(output_string)
-        list_box.delete(1, tk.END)
+        list_box.delete(0, tk.END)
         rows = output_string.split("\n")
         for row in rows:
             list_box.insert("end", row)
