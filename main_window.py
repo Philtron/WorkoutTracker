@@ -1,8 +1,9 @@
 import sys
 import tkinter as tk
 import add_exercise_log
-import add_workout
+from add_workout import AddWorkout
 import database_functions
+from add_weight import AddWeight
 
 
 # Grabs selected item from listbox
@@ -23,7 +24,7 @@ class MainWindow(tk.Tk):
 
         # Set title and dimensions
         self.title("Workout App")
-        self.geometry("250x600")
+        self.geometry("250x650")
 
         # Create menu frame to hold buttons
         menu_frame = tk.Frame(self)
@@ -65,19 +66,30 @@ class MainWindow(tk.Tk):
                                        font=("TKDefaultFont", 18), compound='center',
                                        command=lambda: database_functions.commit_changes(self.mydb))
         self.commit_button.pack(fill='both', expand=True)
+
+        self.pretty_image = tk.PhotoImage(file='Images/pretty_workout.PNG')
+        self.pretty_workout_button = tk.Button(menu_frame, image=self.pretty_image, text="Pretty Workouts", fg='white',
+                                               font=("TKDefaultFont", 18), compound='center',
+                                               command=lambda: self.pretty_workouts())
+        self.pretty_workout_button.pack(fill="both", expand=True)
+
+        self.add_weight_image = tk.PhotoImage(file="Images/add_weight.png")
+        self.add_weight_button = tk.Button(menu_frame, image=self.add_weight_image, text="Add Weigh In", fg='white',
+                                           font=("TkDefaultFont", 18),
+                                           compound='center', command=self.add_weight)
+        self.add_weight_button.pack(fill="both", expand=True)
+
         self.exit_image = tk.PhotoImage(file='Images/exit.PNG')
         self.exit_button = tk.Button(menu_frame, image=self.exit_image, text="Exit", fg='white',
                                      font=("TkDefaultFont", 18),
                                      compound='center', command=lambda: sys.exit(0))
-        self.exit_button.pack(fill="both", expand=True)
 
-        self.pretty_workout_button = tk.Button(self, text="Pretty Workouts", command=lambda: self.pretty_workouts())
-        self.pretty_workout_button.pack(fill="both", expand=True)
+        self.exit_button.pack(fill="both", expand=True)
 
     # Hide self and create and display add_workout window
     def add_workout(self):
         self.withdraw()
-        add_workout_window = add_workout.AddWorkout(self.mydb, master=self)
+        add_workout_window = AddWorkout(self.mydb, master=self)
         add_workout_window.mainloop()
 
     # Hide self and create and display add_exercise window
@@ -152,7 +164,6 @@ class MainWindow(tk.Tk):
             workout_id = int(value.split()[0])
             logs = database_functions.get_exercise_from_workout_id(self.mydb.cursor(), workout_id)
             for log in logs:
-
                 insert_string = string = "EXERCISE ID: {:<10} WORKOUT ID: {:<10} EXERCISE: {:<30} LIFTER: {:<20} " \
                                          "WEIGHT: {:<10} REPS: {:<10} SET #: {:<10} NOTES: {}"
                 formatted_string = insert_string.format(log[0], log[1], log[2], log[3], log[4], log[5], log[6], log[7])
@@ -170,7 +181,6 @@ class MainWindow(tk.Tk):
         workout_listbox.pack(padx=10, pady=10, fill='both', expand=True)
         for workout in workouts:
             workout_listbox.insert("end", f"{workout[0]} | Date: {workout[1]} Notes: {workout[2]}")
-
 
         # id_label = tk.Label(pretty_workouts_window, text="ID")
         # id_entry = tk.Entry(pretty_workouts_window)
@@ -225,3 +235,8 @@ class MainWindow(tk.Tk):
         rows = output_string.split("\n")
         for row in rows:
             list_box.insert("end", row)
+
+    def add_weight(self):
+        self.withdraw()
+        add_weight_window = AddWeight(self.mydb, master=self)
+        add_weight_window.mainloop()

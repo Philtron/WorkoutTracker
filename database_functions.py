@@ -112,6 +112,15 @@ def add_exercise(my_cursor, workout_id, exercise_id, lifter_id, weight, reps, se
     return exercise_updated
 
 
+def insert_weight(my_cursor, lifter_id, weight, date, notes):
+    try:
+        my_cursor.execute(f"INSERT INTO bodyweight_log(lifter_id, weight, date, notes) "
+                          f"VALUES({lifter_id}, {weight}, {date}, {notes}")
+    except (mysql.connector.Error, mysql.connector.errors.InterfaceError) as error:
+        print(f"Error adding workout to database: {error}")
+        messagebox.showerror("Error:", f"Error adding to database: {error}")
+
+
 # Attempts to commit any changes made this session to the database. Notifies the user with a messagebox of the success
 def commit_changes(connection):
     try:
