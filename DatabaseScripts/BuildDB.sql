@@ -14,7 +14,6 @@ CREATE TABLE exercises (
 CREATE TABLE lifters (
   lifter_id INT PRIMARY KEY AUTO_INCREMENT,
   name VARCHAR(50) NOT NULL,
-  weight DECIMAL(5,2) NOT NULL,
   birthday DATE NOT NULL,
   notes TEXT
 );

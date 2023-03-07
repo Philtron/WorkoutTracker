@@ -40,6 +40,12 @@ def get_workouts(my_cursor):
     return my_cursor.fetchall()
 
 
+def get_weight_history(my_cursor, selected_lifter):
+    my_cursor.execute(f"SELECT * FROM bodyweight_log WHERE lifter_id = {selected_lifter}")
+
+    return my_cursor.fetchall()
+
+
 def pretty_workout(my_cursor, workout_id):
     my_cursor.execute(f"SELECT l.name AS lifter_name, e.name AS exercise_name,el.weight, el.reps, el.sets "
                       f"FROM exercise_log AS el JOIN exercises AS e ON el.exercise_id = e.exercise_id "
@@ -59,15 +65,6 @@ def get_exercise_from_workout_id(my_cursor, workout_id):
                       f"ORDER BY elog_id ASC")
     logs = my_cursor.fetchall()
 
-    # If any logs were found, print them with a header
-    # if len(logs) > 0:
-    #     header = "Exercise Log ID | Workout ID | Exercise | Lifter | Weight | Reps | Sets | Notes"
-    #     print(f"Exercise logs for workout {workout_id}:")
-    #     print(header)
-    #     for log in logs:
-    #         print(log)
-    # else:
-    #     print(f"No exercise logs found for workout {workout_id}")
     return logs
 
 
@@ -114,8 +111,12 @@ def add_exercise(my_cursor, workout_id, exercise_id, lifter_id, weight, reps, se
 
 def insert_weight(my_cursor, lifter_id, weight, date, notes):
     try:
+        print(f"INSERT INTO bodyweight_log(lifter_id, weight, date, notes) "
+              f"VALUES({lifter_id}, {weight}, {date}, {notes})")
+
         my_cursor.execute(f"INSERT INTO bodyweight_log(lifter_id, weight, date, notes) "
-                          f"VALUES({lifter_id}, {weight}, {date}, {notes}")
+                          f"VALUES({lifter_id}, {weight}, '{date}', '{notes}')")
+
     except (mysql.connector.Error, mysql.connector.errors.InterfaceError) as error:
         print(f"Error adding workout to database: {error}")
         messagebox.showerror("Error:", f"Error adding to database: {error}")
@@ -128,3 +129,5 @@ def commit_changes(connection):
         messagebox.showinfo("Confirmation", "Changes have been committed.")
     except (mysql.connector.Error, mysql.connector.errors.InterfaceError) as error:
         messagebox.showerror("Error:", f"{error}")
+
+
