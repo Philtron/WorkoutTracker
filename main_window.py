@@ -175,20 +175,17 @@ class MainWindow(tk.Tk):
 
         pretty_workouts_window = tk.Toplevel(self)
         pretty_workouts_window.title("Pretty Workouts")
-        pretty_workouts_window.geometry("500x500")
+        pretty_workouts_window.geometry("700x700")
 
         workout_listbox = tk.Listbox(pretty_workouts_window)
         workout_listbox.pack(padx=10, pady=10, fill='both', expand=True)
         for workout in workouts:
             workout_listbox.insert("end", f"{workout[0]} | Date: {workout[1]} Notes: {workout[2]}")
 
-        # id_label = tk.Label(pretty_workouts_window, text="ID")
-        # id_entry = tk.Entry(pretty_workouts_window)
         pretty_listbox = tk.Listbox(pretty_workouts_window)
         get_id_button = tk.Button(pretty_workouts_window, text="Get Workout",
                                   command=lambda: self.get_pretty(workout_listbox, pretty_listbox))
-        # id_label.pack()
-        # id_entry.pack()
+
         get_id_button.pack()
 
         pretty_listbox.pack(fill="both", expand=True, padx=10, pady=10)
@@ -223,14 +220,16 @@ class MainWindow(tk.Tk):
         for lifter_name, exercise_groups in lifter_groups.items():
             output_string += lifter_name + "\n"
             for exercise_name, exercise_logs in exercise_groups.items():
-                output_string += exercise_name + ", "
+                output_string += exercise_name + " - "
                 for exercise_log in exercise_logs:
                     weight = exercise_log[0]
                     reps = exercise_log[1]
                     sets = exercise_log[2]
-                    output_string += f"{weight}, set {sets} rep {reps}, "
-                output_string = output_string[:-2] + "\n"
-        print(output_string)
+                    output_string += f"Set: {sets} Weight: {weight} Reps: {reps} "
+
+                    # output_string += f"{weight}, set {sets} rep {reps}, "
+                output_string = output_string[:-1] + "\n"
+        # print(output_string)
         list_box.delete(0, tk.END)
         rows = output_string.split("\n")
         for row in rows:

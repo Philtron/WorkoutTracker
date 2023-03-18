@@ -41,7 +41,7 @@ def get_workouts(my_cursor):
 
 
 def get_weight_history(my_cursor, selected_lifter):
-    my_cursor.execute(f"SELECT * FROM bodyweight_log WHERE lifter_id = {selected_lifter}")
+    my_cursor.execute(f"SELECT * FROM bodyweight_log WHERE lifter_id = {selected_lifter} ORDER BY date DESC")
 
     return my_cursor.fetchall()
 
