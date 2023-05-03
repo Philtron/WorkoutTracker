@@ -9,12 +9,13 @@ def connect_to_database(username, password):
     try:
         # Attempt to connect with credentials
         my_db = mysql.connector.connect(user=username, password=password, host='localhost', database='workout')
-        print("Connected to database successfully!")
+        # messagebox.showinfo("Notification", "Successfully Connected to Database!")
+        # print("Connected to database successfully!")
         # Return connection object
         return my_db
     except (mysql.connector.Error, mysql.connector.errors.InterfaceError) as error:
         # If connection fails, print error message and return None
-        print(f"Failed to connect to database: {error}")
+        # print(f"Failed to connect to database: {error}")
         messagebox.showerror("Error:", f"{error}")
 
 
@@ -78,11 +79,11 @@ def add_workout(my_cursor, date, notes):
         sql = "INSERT INTO workouts(date, notes) VALUES(%s, %s)"
         val = (date, notes)
         query = sql % val
-        print(f"Running: {query}")
+        # print(f"Running: {query}")
         my_cursor.execute(sql, val)
         workout_updated = True
     except (mysql.connector.Error, mysql.connector.errors.InterfaceError) as error:
-        print(f"Error adding workout to database: {error}")
+        # print(f"Error adding workout to database: {error}")
         messagebox.showerror("Error:", f"Error adding to database: {error}")
 
     return workout_updated
@@ -98,12 +99,12 @@ def add_exercise(my_cursor, workout_id, exercise_id, lifter_id, weight, reps, se
               "VALUES(%s, %s, %s, %s, %s, %s, %s) "
         val = (workout_id, exercise_id, lifter_id, weight, reps, set_number, notes)
         query = sql % val
-        print(f"Running: {query}")
+        # print(f"Running: {query}")
         my_cursor.execute(sql, val)
         exercise_updated = True
     except mysql.connector.Error as error:
         exercise_updated = False
-        print(f"Error: {error}")
+        # print(f"Error: {error}")
         messagebox.showerror("Error:", f"{error}")
 
     return exercise_updated
@@ -111,14 +112,14 @@ def add_exercise(my_cursor, workout_id, exercise_id, lifter_id, weight, reps, se
 
 def insert_weight(my_cursor, lifter_id, weight, date, notes):
     try:
-        print(f"INSERT INTO bodyweight_log(lifter_id, weight, date, notes) "
-              f"VALUES({lifter_id}, {weight}, {date}, {notes})")
+        # print(f"INSERT INTO bodyweight_log(lifter_id, weight, date, notes) "
+        #       f"VALUES({lifter_id}, {weight}, {date}, {notes})")
 
         my_cursor.execute(f"INSERT INTO bodyweight_log(lifter_id, weight, date, notes) "
                           f"VALUES({lifter_id}, {weight}, '{date}', '{notes}')")
 
     except (mysql.connector.Error, mysql.connector.errors.InterfaceError) as error:
-        print(f"Error adding workout to database: {error}")
+        # print(f"Error adding workout to database: {error}")
         messagebox.showerror("Error:", f"Error adding to database: {error}")
 
 

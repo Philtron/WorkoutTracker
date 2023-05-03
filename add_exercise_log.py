@@ -137,17 +137,17 @@ class AddExercise(tk.Toplevel):
         if self.validate_inputs():
             workout_id = get_id(self.workout_options.get())
             # workout_id = self.get_item_id(self.workout_combo, self.get_workouts())
-            print(f"Workout ID: {workout_id}")
+            # print(f"Workout ID: {workout_id}")
 
             # selected_lifter = self.lifter_options.get()
             # lifter_id = get_id(selected_lifter)
             # lifter_id = self.get_lifter_id()
             lifter_id = get_item_id(self.lifter_combo, self.get_lifters())
-            print(f"Lifter ID: {lifter_id}")
+            # print(f"Lifter ID: {lifter_id}")
 
             exercise_id = get_id(self.exercise_options.get())
             # exercise_id = get_item_id(self.exercise_combo, self.get_exercises())
-            print(f"Exercise ID: {exercise_id}")
+            # print(f"Exercise ID: {exercise_id}")
 
             set_number = self.set_num_entry.get()
             weight = self.weight_entry.get()

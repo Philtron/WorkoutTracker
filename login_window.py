@@ -1,3 +1,4 @@
+import time
 import tkinter as tk
 from tkinter import messagebox
 from database_functions import connect_to_database
@@ -14,6 +15,7 @@ class LoginWindow(tk.Tk):
         # Create Title label
         self.title_label = tk.Label(self, text="Log In", font=("TkDefaultFont", 21))
         self.title_label.grid(row=0, column=0, sticky="N", padx=10, pady=10)
+        # self.message_label = tk.Label(self, text="Log In Successful", font=("TkDefaultFont", 14))
 
         # Create grid frame to hold input fields
         self.grid_frame = tk.Frame(self)
@@ -34,6 +36,8 @@ class LoginWindow(tk.Tk):
         # Create login button
         self.login_button = tk.Button(self.grid_frame, text="Log In", command=self.login)
         self.login_button.grid(row=2, column=0, pady=10)
+        # self.message_label.grid(row=1, column=1, sticky="W", pady=5)
+        # self.grid_frame.columnconfigure(1, weight=1)
 
     # Login function that verifies user credentials and opens main window
     def login(self):
@@ -46,6 +50,9 @@ class LoginWindow(tk.Tk):
 
         # If connection is successful, destroy login window and open main window
         if db_connection is not None:
+            self.title_label.config(text="Log In Successful!", font=("TkDefaultFont", 21))
+            self.update()
+            time.sleep(1)
             self.destroy()
             MainWindow(db_connection)
         # If connection is unsuccessful, show error message
